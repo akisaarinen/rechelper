@@ -23,7 +23,9 @@ class MovieLensTestSuite(unittest.TestCase):
 
       self.assertEqual(ds.item_idx_map[0], 1)
       self.assertEqual(ds.item_idx_map[1], 2)
-      self.assertEqual(ds.item_idx_map[1681], 1682)      
+      self.assertEqual(ds.item_idx_map[1681], 1682)
+
+      ds.print_stats()
 
     def test_load_ml_latest_small(self):
       ratings_all, movies_all = rechelper.movielens.load_movielens("ml-latest-small")

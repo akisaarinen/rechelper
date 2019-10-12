@@ -10,6 +10,11 @@ class DataSet:
     self.item_idx_map = item_idx_map
     self.unique_users = np.unique(ratings["user"]).shape[0]
     self.unique_items = np.unique(ratings["item"]).shape[0]
+
+  def print_stats(self):
+    print("Ratings:      %d" % self.ratings.shape[0])
+    print("Unique users: %d" % self.unique_users)
+    print("Unique items: %d" % self.unique_items)
     
 def create(df,
     user_col="userId",
