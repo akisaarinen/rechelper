@@ -6,6 +6,12 @@ import numpy as np
 
 DEFAULT_LOCAL_DATA_DIR="./data"
 
+def load_movielens(dataset_name, local_data_dir=DEFAULT_LOCAL_DATA_DIR):
+  dataset=datasets[dataset_name]
+  movies=load_movies(dataset_name, dataset, local_data_dir)
+  ratings=load_ratings(dataset_name, dataset, local_data_dir)
+  return ratings, movies
+
 def load_ratings(dataset_name, dataset, local_data_dir):
   raw = pd.read_csv(
     "%s/%s/%s/%s" % (
@@ -77,12 +83,6 @@ def load_movies(dataset_name, dataset, local_data_dir):
   if "postprocess" in dataset["movies"]:
     raw = dataset["movies"]["postprocess"](raw)
   return raw
-
-def load_movielens(dataset_name, local_data_dir=DEFAULT_LOCAL_DATA_DIR):
-  dataset=datasets[dataset_name]
-  movies=load_movies(dataset_name, dataset, local_data_dir)
-  ratings=load_ratings(dataset_name, dataset, local_data_dir)
-  return ratings, movies
 
 def download_and_extract(dataset_name, local_data_dir=DEFAULT_LOCAL_DATA_DIR):
   dataset=datasets[dataset_name]
