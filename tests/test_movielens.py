@@ -21,9 +21,17 @@ class MovieLensTestSuite(unittest.TestCase):
       self.assertEqual(ds.user_idx_map[1], 2)
       self.assertEqual(ds.user_idx_map[942], 943)
 
+      self.assertEqual(ds.idx_user_map[1], 0)
+      self.assertEqual(ds.idx_user_map[2], 1)
+      self.assertEqual(ds.idx_user_map[943], 942)
+
       self.assertEqual(ds.item_idx_map[0], 1)
       self.assertEqual(ds.item_idx_map[1], 2)
       self.assertEqual(ds.item_idx_map[1681], 1682)
+
+      self.assertEqual(ds.idx_item_map[1], 0)
+      self.assertEqual(ds.idx_item_map[2], 1)
+      self.assertEqual(ds.idx_item_map[1682], 1681)
 
       ds.print_stats()
 
@@ -41,9 +49,17 @@ class MovieLensTestSuite(unittest.TestCase):
       self.assertEqual(ds.user_idx_map[1], 2)
       self.assertEqual(ds.user_idx_map[609], 610)
 
+      self.assertEqual(ds.idx_user_map[1], 0)
+      self.assertEqual(ds.idx_user_map[2], 1)
+      self.assertEqual(ds.idx_user_map[610], 609)
+
       self.assertEqual(ds.item_idx_map[0], 1)
       self.assertEqual(ds.item_idx_map[1], 2)
       self.assertEqual(ds.item_idx_map[9723], 193609)
+
+      self.assertEqual(ds.idx_item_map[1], 0)
+      self.assertEqual(ds.idx_item_map[2], 1)
+      self.assertEqual(ds.idx_item_map[193609], 9723)
 
 if __name__ == '__main__':
     unittest.main()
