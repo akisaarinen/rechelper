@@ -8,8 +8,8 @@ class DataSet:
     self.ratings = ratings
     self.user_idx_map = user_idx_map
     self.item_idx_map = item_idx_map
-    self.unique_users = np.unique(ratings["user"]).shape
-    self.unique_items = np.unique(ratings["item"]).shape
+    self.unique_users = np.unique(ratings["user"]).shape[0]
+    self.unique_items = np.unique(ratings["item"]).shape[0]
     
 def create(df,
     user_col="userId",
@@ -34,8 +34,6 @@ def zero_based_array(df, col):
   unique_values = np.unique(values)
   n_unique_values = unique_values.shape[0]
   max_value = np.max(unique_values)
-  print("n_unique_values=",n_unique_values)
-  print("max_value=",max_value)
 
   zero_based_map = np.zeros(max_value+1, dtype=int)
   zero_based_map[unique_values] = np.arange(n_unique_values)
