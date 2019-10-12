@@ -94,10 +94,14 @@ def download_and_extract(dataset_name, local_data_dir=DEFAULT_LOCAL_DATA_DIR):
   else:
     print("Downloading %s from '%s'..." % (dataset_name, url))
     urllib.request.urlretrieve(url, zip_path, reporthook=download_reporthook)
-  print("* Extracting to '%s'..." % output_path)
-  zip_ref = zipfile.ZipFile(zip_path, "r")
-  zip_ref.extractall(path=output_path)
-  print("Done.")
+
+  if os.path.exists(output_path):
+    print("Already extracted for %s at %s" % (dataset_name, output_path))
+  else:
+    print("* Extracting to '%s'..." % output_path)
+    zip_ref = zipfile.ZipFile(zip_path, "r")
+    zip_ref.extractall(path=output_path)
+    print("* ZIP extract done")
 
 def download_reporthook(chunk_num, chunk_size, total_size):
   MB=1024.0 * 1024.0
