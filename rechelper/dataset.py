@@ -35,9 +35,6 @@ def create(df,
   })
   return DataSet(rating_df, user_idx_map, idx_user_map, item_idx_map, idx_item_map)
 
-def create_train_test_set(df):
-  return []
-
 def zero_based_array(df, col):
   values = df[col].values
 
