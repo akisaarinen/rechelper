@@ -14,9 +14,12 @@ class DataSet:
     self.unique_items = np.unique(ratings["item"]).shape[0]
 
   def print_stats(self):
-    print("Ratings:      %d" % self.ratings.shape[0])
-    print("Unique users: %d" % self.unique_users)
-    print("Unique items: %d" % self.unique_items)
+    sparsity = self.ratings.shape[0] / (self.unique_users * self.unique_items)
+    print("Ratings:        %d" % self.ratings.shape[0])
+    print("Unique users:   %d" % self.unique_users)
+    print("Unique items:   %d" % self.unique_items)
+    print("Users/item:     %.2f" % (self.unique_users / self.unique_items))
+    print("Sparsity:       %0.2f%%" % (100.0*sparsity))
     
 def create(df,
     user_col="userId",
