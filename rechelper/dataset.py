@@ -13,6 +13,17 @@ class DataSet:
     self.unique_users = np.unique(ratings["user"]).shape[0]
     self.unique_items = np.unique(ratings["item"]).shape[0]
 
+  def min_counts(self, user_min_count=500, item_min_count=500):
+    df = self.ratings.copy()
+    user_counts = df.groupby('user').agg({'item': 'count'})
+    user_included = user_counts[user_counts['item'] >= user_min_count].index.values
+    item_counts = df.groupby('item').agg({'user': 'count'})
+    item_included = item_counts[item_counts['user'] >= item_min_count].index.values
+    df = df[df['user'].isin(user_included) & df['item'].isin(item_included)]
+    df['userId'] = self.user_idx_map[df['user']]
+    df['itemId'] = self.item_idx_map[df['item']]
+    return create(df, user_col="userId", item_col="itemId", rating_col="rating")
+
   def print_stats(self):
     sparsity = self.ratings.shape[0] / (self.unique_users * self.unique_items)
     print("Ratings:        %d" % self.ratings.shape[0])
