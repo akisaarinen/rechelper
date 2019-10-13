@@ -25,3 +25,6 @@ class BaselineMean:
 
   def predict_user_mean(self, df_test):
     return self.mean_user_ratings[df_test["user"]]
+
+  def predict_item_user_mean(self, df_test):
+    return (self.predict_item_mean(df_test) + self.predict_user_mean(df_test))/2.0
