@@ -4,6 +4,8 @@ import rechelper.baseline
 import rechelper.metrics
 import sys
 
+from scipy.sparse import csr_matrix
+
 import numpy as np
 import pandas as pd
 
@@ -75,20 +77,30 @@ recs_for("Aladdin")
 recs_for("Star Trek")
 recs_for("Star Wars")
 
+# Helpers
+def save_sparse_csr(filename, array):
+  np.savez(filename, data=array.data, indices=array.indices,
+    indptr=array.indptr, shape=array.shape)
+
+def load_sparse_csr(filename):
+  loader = np.load(filename + '.npz')
+  return csr_matrix((loader['data'], loader['indices'], loader['indptr']),
+                    shape=loader['shape'])
+
 # Enable when needed
-if False:
+if True:
+  print("=========")
+  print("Mapping imdb to movie ids for saving")
+
+  item_idx = np.arange(selected.unique_items)
+  movie_ids = map(lambda x: selected.item_idx_map[x], item_idx)
+  movie_id_to_imdb_id = movies.set_index("movieId")["imdbId"].to_dict()
+  imdb_ids = list(map(lambda x: movie_id_to_imdb_id[x], movie_ids))
+
   print("=========")
   print("Saving to file")
-  pd.DataFrame(
-    data = baselineSim.cor.toarray(),
-    index = np.arange(selected.unique_items),
-    columns = map(str, np.arange(selected.unique_items))
-  ).to_parquet("sim_%s_cor.parquet.gz"%name, compression="gzip")
-
-  pd.DataFrame(
-    data = baselineSim.item_overlaps.toarray(),
-    index = np.arange(selected.unique_items),
-    columns = map(str, np.arange(selected.unique_items))
-  ).to_parquet("sim_%s_overlap.parquet.gz"%name, compression="gzip")
-
+  save_sparse_csr("sim_%s_matrix"%name, baselineSim.cor)
+  pd.DataFrame({
+    'imdb_id': imdb_ids
+  }).to_csv("sim_%s_mapping.csv" % name)
   print("Done.")
