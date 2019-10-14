@@ -42,7 +42,7 @@ def create(df,
   rating_df = pd.DataFrame({
     "user": user_idx,
     "item": item_idx,
-    "rating": df[rating_col]
+    "rating": df[rating_col].astype('float')
   })
   return DataSet(rating_df, user_idx_map, idx_user_map, item_idx_map, idx_item_map)
 
