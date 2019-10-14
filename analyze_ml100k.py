@@ -2,6 +2,7 @@ import rechelper.movielens
 import rechelper.dataset
 import rechelper.baseline
 import rechelper.metrics
+import sys
 
 import numpy as np
 import pandas as pd
@@ -12,8 +13,9 @@ from sklearn.model_selection import train_test_split
 name="ml-latest-small"
 rechelper.movielens.download_and_extract(name)
 ratings_all,movies = rechelper.movielens.load_movielens(name)
-ds = rechelper.dataset.create(ratings_all)
 
+# Create dataset
+ds = rechelper.dataset.create(ratings_all)
 print("Original dataframe")
 ds.print_stats()
 
@@ -73,18 +75,20 @@ recs_for("Aladdin")
 recs_for("Star Trek")
 recs_for("Star Wars")
 
-print("=========")
-print("Saving to file")
-pd.DataFrame(
-  data = baselineSim.cor.toarray(),
-  index = np.arange(selected.unique_items),
-  columns = map(str, np.arange(selected.unique_items))
-).to_parquet("sim_%s_cor.parquet.gz"%name, compression="gzip")
+# Enable when needed
+if False:
+  print("=========")
+  print("Saving to file")
+  pd.DataFrame(
+    data = baselineSim.cor.toarray(),
+    index = np.arange(selected.unique_items),
+    columns = map(str, np.arange(selected.unique_items))
+  ).to_parquet("sim_%s_cor.parquet.gz"%name, compression="gzip")
 
-pd.DataFrame(
-  data = baselineSim.item_overlaps.toarray(),
-  index = np.arange(selected.unique_items),
-  columns = map(str, np.arange(selected.unique_items))
-).to_parquet("sim_%s_overlap.parquet.gz"%name, compression="gzip")
+  pd.DataFrame(
+    data = baselineSim.item_overlaps.toarray(),
+    index = np.arange(selected.unique_items),
+    columns = map(str, np.arange(selected.unique_items))
+  ).to_parquet("sim_%s_overlap.parquet.gz"%name, compression="gzip")
 
-print("Done.")
+  print("Done.")

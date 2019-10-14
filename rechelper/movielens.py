@@ -69,12 +69,14 @@ def postprocess_movies_latest(raw):
   return raw
 
 def load_movies(dataset_name, dataset, local_data_dir):
-  raw = pd.read_csv(
-    "%s/%s/%s/%s" % (
+  base_path = "%s/%s/%s" % (
       local_data_dir,
       dataset_name,
-      dataset["extracted_path"],
-      dataset["movies"]["filename"]),
+      dataset["extracted_path"]
+  )
+  
+  raw = pd.read_csv(
+    "%s/%s" % (base_path, dataset["movies"]["filename"]),
     sep=dataset["movies"]["sep"],
     encoding=dataset["encoding"],
     names=dataset["movies"]["cols"],
@@ -82,6 +84,20 @@ def load_movies(dataset_name, dataset, local_data_dir):
   )
   if "postprocess" in dataset["movies"]:
     raw = dataset["movies"]["postprocess"](raw)
+
+  if "filename" in dataset["links"]:
+    links = pd.read_csv(
+      "%s/%s" % (base_path, dataset["links"]["filename"]),
+      sep=",",
+      encoding=dataset["encoding"],
+      dtype={'movieId': int, 'imdbId': str, "tmdbId": str}
+    )
+    raw = raw.merge(links, how="left", on="movieId")
+  else:
+    print("Warning: IMDB links not loaded")
+    raw['imdbId'] = "N/A"
+    raw['tmdbId'] = "N/A"
+  
   return raw
 
 def download_and_extract(dataset_name, local_data_dir=DEFAULT_LOCAL_DATA_DIR):
@@ -133,7 +149,8 @@ datasets = {
       "sep": "|",
       "cols": ["movieId", "title", "releaseDate", "videoReleaseDate", "imdbUrl"] + ML100k_genre_cols,
       "postprocess": postprocess_movies_ml100k,
-    }
+    },
+    "links": {},
   },
   "ml-latest-small": {
     "url_path": "http://files.grouplens.org/datasets/movielens",
@@ -150,7 +167,10 @@ datasets = {
       "sep": ",",
       "cols": None,
       "postprocess": postprocess_movies_latest,
-    }    
+    },
+    "links": {
+      "filename": "links.csv",
+    }
   },
   "ml-latest": {
     "url_path": "http://files.grouplens.org/datasets/movielens",
@@ -167,7 +187,10 @@ datasets = {
       "sep": ",",
       "cols": None,
       "postprocess": postprocess_movies_latest,
-    }    
+    },
+    "links": {
+      "filename": "links.csv",
+    },
   },  
   "ml-1m": {
     "url_path": "http://files.grouplens.org/datasets/movielens",
@@ -185,6 +208,7 @@ datasets = {
       "sep": "::",
       "cols": ["movieId", "title", "genres"],
       "postprocess": postprocess_movies_latest,
-    }    
+    },
+    "links": {},
   },  
 }
