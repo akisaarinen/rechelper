@@ -20,7 +20,7 @@ ds.print_stats()
 print("----")
 print("Selected movies")
 selected = ds
-selected = selected.min_counts(user_min_count=100, item_min_count=100)
+#selected = selected.min_counts(user_min_count=100, item_min_count=100)
 selected.print_stats()
 
 def item_by_title(title):
@@ -53,6 +53,9 @@ baselineSim = rechelper.baseline.BaselineSim(
 )
 print("=> Done!")
 
+print("=========")
+print("Showing a few example predictions")
+
 def recs_for(find_title):
   item_idx = item_by_title(find_title)
   movie_id = selected.item_idx_map[item_idx]
@@ -69,3 +72,19 @@ def recs_for(find_title):
 recs_for("Aladdin")
 recs_for("Star Trek")
 recs_for("Star Wars")
+
+print("=========")
+print("Saving to file")
+pd.DataFrame(
+  data = baselineSim.cor.toarray(),
+  index = np.arange(selected.unique_items),
+  columns = map(str, np.arange(selected.unique_items))
+).to_parquet("sim_%s_cor.parquet.gz"%name, compression="gzip")
+
+pd.DataFrame(
+  data = baselineSim.item_overlaps.toarray(),
+  index = np.arange(selected.unique_items),
+  columns = map(str, np.arange(selected.unique_items))
+).to_parquet("sim_%s_overlap.parquet.gz"%name, compression="gzip")
+
+print("Done.")
